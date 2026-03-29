@@ -1,9 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Students</title>
-<link rel="stylesheet" href="styles.css">
+<title>Manage Students</title>
+
+<style>
+body{font-family:Arial;background:#eef2f5;}
+.container{width:1100px;margin:auto;background:white;padding:20px;border-radius:10px;}
+input{padding:8px;margin:5px;border:1px solid #ccc;border-radius:4px;}
+button{padding:8px 12px;background:#1abc9c;border:none;color:white;cursor:pointer;border-radius:4px;}
+table{width:100%;border-collapse:collapse;margin-top:20px;}
+th,td{border:1px solid #ccc;padding:10px;text-align:center;}
+th{background:#34495e;color:white;}
+.deleteBtn{background:#e74c3c;}
+</style>
+
 </head>
 
 <body>
@@ -25,52 +35,93 @@
 
 <h2>Student List</h2>
 
-<div class="table-wrapper">
 <table id="studentsTable"></table>
-</div>
 
 </div>
 
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { getDatabase, ref, set, remove, onValue } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-database.js";
+
+import {
+getDatabase,
+ref,
+set,
+remove,
+onValue
+} from "https://www.gstatic.com/firebasejs/12.10.0/firebase-database.js";
+
 
 const firebaseConfig = {
-apiKey:"AIzaSy...",
-databaseURL:"https://bus-attendance-84df2-default-rtdb.asia-southeast1.firebasedatabase.app"
+  apiKey: "AIzaSyCTEemdu-DXbwFHT4oXNMsvZiNTRX2sSGo",
+  authDomain: "bus-attendance-84df2.firebaseapp.com",
+  databaseURL: "https://bus-attendance-84df2-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "bus-attendance-84df2",
+  storageBucket: "bus-attendance-84df2.firebasestorage.app",
+  messagingSenderId: "703132257048",
+  appId: "1:703132257048:web:788b8532720d7fcedb6c6d"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
+
+// ===============================
+// ADD STUDENT
+// ===============================
 window.addStudent = function(){
 
+const name=document.getElementById("name").value;
+const roll=document.getElementById("roll").value;
+const year=document.getElementById("year").value;
+const dept=document.getElementById("dept").value;
+const section=document.getElementById("section").value;
 const uid=document.getElementById("uid").value;
+const busId=document.getElementById("busId").value;
+const parent_email=document.getElementById("parent_email").value;
+
+if(!uid){
+alert("UID required");
+return;
+}
 
 set(ref(db,"students/"+uid),{
-name:document.getElementById("name").value,
-roll:document.getElementById("roll").value,
-year:document.getElementById("year").value,
-dept:document.getElementById("dept").value,
-section:document.getElementById("section").value,
-busId:document.getElementById("busId").value,
-parent_email:document.getElementById("parent_email").value
+name:name,
+roll:roll,
+year:year,
+dept:dept,
+section:section,
+busId:busId,
+parent_email:parent_email
 });
 
-alert("Added");
+alert("Student Added");
 
-};
+document.querySelectorAll("input").forEach(i=>i.value="");
 
+}
+
+
+// ===============================
+// LOAD STUDENTS
+// ===============================
 const table=document.getElementById("studentsTable");
 
 onValue(ref(db,"students"),(snapshot)=>{
 
-table.innerHTML=`<tr>
-<th>Name</th><th>Roll</th><th>Year</th>
-<th>Dept</th><th>Section</th><th>UID</th>
-<th>Bus</th><th>Email</th>
-</tr>`;
+table.innerHTML=`
+<tr>
+<th>Name</th>
+<th>Roll</th>
+<th>Year</th>
+<th>Dept</th>
+<th>Section</th>
+<th>UID</th>
+<th>Bus</th>
+<th>Email</th>
+<th>Delete</th>
+</tr>
+`;
 
 snapshot.forEach((child)=>{
 
@@ -87,11 +138,25 @@ table.innerHTML+=`
 <td>${uid}</td>
 <td>${s.busId}</td>
 <td>${s.parent_email}</td>
-</tr>`;
+<td><button class="deleteBtn" onclick="deleteStudent('${uid}')">Delete</button></td>
+</tr>
+`;
 
 });
 
 });
+
+
+// ===============================
+// DELETE STUDENT
+// ===============================
+window.deleteStudent=function(uid){
+
+if(!confirm("Delete student?")) return;
+
+remove(ref(db,"students/"+uid));
+
+}
 
 </script>
 
