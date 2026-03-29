@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bus Attendance</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#eef2f5;
+margin:0;
+}
+
+.container{
+max-width:1000px;
+width:95%;
+margin:auto;
+background:white;
+padding:15px;
+border-radius:10px;
+}
+
+h2{
+text-align:center;
+}
+
+.searchBox{
+text-align:center;
+margin-bottom:20px;
+}
+
+input,button{
+padding:10px;
+margin:5px;
+width:90%;
+max-width:300px;
+}
+
+.hidden{
+display:none;
+}
+
+.active{
+background:#2c3e50;
+color:white;
+}
+
+/* MOBILE TABLE FIX */
+.table-wrapper{
+overflow-x:auto;
+}
+
+table{
+min-width:600px;
+width:100%;
+border-collapse:collapse;
+}
+
+th,td{
+border:1px solid #ccc;
+padding:10px;
+text-align:center;
+}
+
+th{
+background:#2c3e50;
+color:white;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Bus Attendance</h2>
+
+<div class="searchBox">
+
+<input type="text" id="busSearch" placeholder="Enter Bus ID (KBS001)">
+<button onclick="searchBus()">Search</button>
+
+<br><br>
+
+<div id="buttons" class="hidden">
+
+<button onclick="showAttendance()" id="attBtn" class="active">Attendance</button>
+<button onclick="showUnauthorized()" id="unaBtn">Unauthorized Cards</button>
+
+</div>
+
+</div>
+
+<div class="table-wrapper">
+<table id="attendanceTable"></table>
+</div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+
+import {
+getDatabase,
+ref,
+onValue
+} from "https://www.gstatic.com/firebasejs/12.10.0/firebase-database.js";
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCTEemdu-DXbwFHT4oXNMsvZiNTRX2sSGo",
+  authDomain: "bus-attendance-84df2.firebaseapp.com",
+  databaseURL: "https://bus-attendance-84df2-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "bus-attendance-84df2",
+  storageBucket: "bus-attendance-84df2.firebasestorage.app",
+  messagingSenderId: "703132257048",
+  appId: "1:703132257048:web:788b8532720d7fcedb6c6d"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const table=document.getElementById("attendanceTable");
+
+let students={};
+let selectedBus="";
+let mode="attendance";
+
+
+// FORMAT TIME
+function formatTime(time){
+
+let parts=time.split(":");
+
+let hour=parseInt(parts[0]);
+let minute=parts[1] || "00";
+let second=parts[2] || "00";
+
+let ampm="AM";
+
+if(hour>=12) ampm="PM";
+
+hour=hour%12;
+if(hour==0) hour=12;
+
+return hour+":"+minute+":"+second+" "+ampm;
+
+}
+
+
+// LOAD STUDENTS
+onValue(ref(db,"students"),(snap)=>{
+students=snap.val() || {};
+});
+
+
+// SEARCH
+window.searchBus=function(){
+
+selectedBus=document.getElementById("busSearch").value.trim();
+
+if(selectedBus==""){
+alert("Enter Bus ID");
+return;
+}
+
+document.getElementById("buttons").classList.remove("hidden");
+
+showAttendance();
+
+}
+
+
+// SHOW ATTENDANCE
+window.showAttendance=function(){
+
+mode="attendance";
+
+document.getElementById("attBtn").classList.add("active");
+document.getElementById("unaBtn").classList.remove("active");
+
+loadData();
+
+}
+
+
+// SHOW UNAUTHORIZED
+window.showUnauthorized=function(){
+
+mode="unauthorized";
+
+document.getElementById("unaBtn").classList.add("active");
+document.getElementById("attBtn").classList.remove("active");
+
+loadData();
+
+}
+
+
+// 🔥 MAIN FIX (SORTED DATA)
+function loadData(){
+
+let path = mode=="attendance" ? "attendance" : "unauthorized";
+
+onValue(ref(db,path),(snapshot)=>{
+
+let records = [];
+
+snapshot.forEach((dateSnap)=>{
+
+const date = dateSnap.key;
+
+dateSnap.forEach((recordSnap)=>{
+
+const data = recordSnap.val();
+
+const uid = data.uid;
+
+let name="Unknown";
+let bus="Unknown";
+
+if(students[uid]){
+name=students[uid].name;
+bus=students[uid].busId;
+}
+
+// filter by bus
+if(mode=="attendance"){
+if(bus != selectedBus) return;
+}
+
+// create datetime object
+let dateTime = new Date(date + " " + data.time);
+
+records.push({
+date,
+uid,
+name,
+bus,
+time:data.time,
+status:data.status,
+dateTime
+});
+
+});
+
+});
+
+
+// SORT NEW → OLD
+records.sort((a,b)=> b.dateTime - a.dateTime);
+
+
+// TABLE HEADER
+if(mode=="attendance"){
+
+table.innerHTML=`
+<tr>
+<th>Date</th>
+<th>UID</th>
+<th>Name</th>
+<th>Bus</th>
+<th>Time</th>
+<th>Status</th>
+</tr>
+`;
+
+}else{
+
+table.innerHTML=`
+<tr>
+<th>Date</th>
+<th>UID</th>
+<th>Name</th>
+<th>Bus</th>
+<th>Time</th>
+</tr>
+`;
+
+}
+
+
+// DISPLAY DATA
+records.forEach(r=>{
+
+let time = formatTime(r.time);
+
+if(mode=="attendance"){
+
+table.innerHTML+=`
+<tr>
+<td>${r.date}</td>
+<td>${r.uid}</td>
+<td>${r.name}</td>
+<td>${r.bus}</td>
+<td>${time}</td>
+<td>${r.status}</td>
+</tr>
+`;
+
+}else{
+
+table.innerHTML+=`
+<tr>
+<td>${r.date}</td>
+<td>${r.uid}</td>
+<td>${r.name}</td>
+<td>${r.bus}</td>
+<td>${time}</td>
+</tr>
+`;
+
+}
+
+});
+
+});
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reports - College Bus Attendance</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f7fa;
+      margin: 0;
+      padding: 0;
+    }
+
+    .navbar {
+      background: #2c3e50;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+    }
+    .navbar a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 40px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background: #34495e;
+      color: white;
+    }
+
+    .btn-download {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: #1abc9c;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+    .btn-download:hover {
+      background: #16a085;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="logo">Reports</div>
+    <nav>
+      <a href="admin.html">⬅ Back to Dashboard</a>
+    </nav>
+  </header>
+
+  <!-- Reports Container -->
+  <div class="container">
+    <h2>Attendance Reports</h2>
+
+    <table id="reportTable">
+      <tr>
+        <th>Bus ID</th>
+        <th>Driver</th>
+        <th>Total Students</th>
+        <th>Present</th>
+        <th>Absent</th>
+        <th>Attendance %</th>
+      </tr>
+    </table>
+
+    <a href="#" class="btn-download" onclick="downloadReport()">⬇ Download Report (CSV)</a>
+  </div>
+
+  <script>
+    // Dummy data (later from DB)
+    const reportData = [
+      { busId: "KBS001", driver: "Rajkumar", total: 40, present: 38, absent: 2 },
+      { busId: "KBS002", driver: "Manoj", total: 35, present: 30, absent: 5 },
+      { busId: "KBS003", driver: "Suresh", total: 45, present: 44, absent: 1 }
+    ];
+
+    const table = document.getElementById("reportTable");
+
+    reportData.forEach(bus => {
+      const percent = ((bus.present / bus.total) * 100).toFixed(1);
+      const row = `
+        <tr>
+          <td>${bus.busId}</td>
+          <td>${bus.driver}</td>
+          <td>${bus.total}</td>
+          <td style="color:green;font-weight:bold">${bus.present}</td>
+          <td style="color:red;font-weight:bold">${bus.absent}</td>
+          <td>${percent}%</td>
+        </tr>
+      `;
+      table.innerHTML += row;
+    });
+
+    // Export table to CSV
+    function downloadReport() {
+      let csv = "Bus ID,Driver,Total,Present,Absent,Attendance %\n";
+      reportData.forEach(bus => {
+        const percent = ((bus.present / bus.total) * 100).toFixed(1);
+        csv += `${bus.busId},${bus.driver},${bus.total},${bus.present},${bus.absent},${percent}%\n`;
+      });
+
+      const blob = new Blob([csv], { type: "text/csv" });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "attendance_report.csv";
+      a.click();
+    }
+  </script>
+
+</body>
+</html>
