@@ -7,10 +7,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- ✅ SEO Improvement -->
-  <meta name="description" content="Kongu Engineering College Bus Attendance System using RFID and IR for safe and smart student transport.">
+  <!-- ✅ SEO META -->
+  <title>KEC Bus Facility | Kongu Engineering College Bus Attendance System</title>
 
-  <title>Kongu Engineering College - Bus Attendance System</title>
+  <meta name="description" content="KEC Bus Facility - Smart RFID bus attendance system for Kongu Engineering College. Safe, reliable and automated student transport system.">
+
+  <meta name="keywords" content="KEC bus facility, kongu engineering college bus, RFID bus system, bus attendance system, KEC transport">
+
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph (for sharing) -->
+  <meta property="og:title" content="KEC Bus Facility">
+  <meta property="og:description" content="Smart bus attendance system for Kongu Engineering College">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://kec-bus-facility.vercel.app/">
 
   <style>
     body {
@@ -20,7 +30,6 @@
       background-color: #f4f7fa;
     }
 
-    /* Navbar */
     .navbar {
       position: fixed;
       top: 0;
@@ -34,21 +43,16 @@
       z-index: 10;
     }
     .navbar .logo {
-      font-size: 24px;
+      font-size: 22px;
       font-weight: bold;
     }
     .navbar nav a {
       color: white;
       text-decoration: none;
       margin-left: 20px;
-      font-size: 16px;
-      transition: color 0.3s ease;
-    }
-    .navbar nav a:hover {
-      color: #1abc9c;
+      font-size: 15px;
     }
 
-    /* Hero slider */
     .hero-container {
       position: relative;
       height: 60vh;
@@ -71,81 +75,55 @@
       position: absolute;
       width: 100%;
       height: 100%;
-      background: rgba(0,0,0,0.35);
+      background: rgba(0,0,0,0.4);
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       color: white;
       text-align: center;
-      padding: 0 20px;
     }
+
     .hero-overlay h1 {
-      font-size: 36px;
+      font-size: 34px;
       margin: 0;
-      text-transform: uppercase;
-      letter-spacing: 2px;
     }
+
     .hero-overlay p {
       font-size: 18px;
       margin-top: 10px;
     }
-    .hero-overlay .btn {
+
+    .btn {
       margin-top: 20px;
-      padding: 10px 24px;
-      font-size: 16px;
-      border: none;
-      background-color: #1abc9c;
+      padding: 10px 20px;
+      background: #1abc9c;
       color: white;
       text-decoration: none;
       border-radius: 5px;
-      transition: background-color 0.3s ease;
-    }
-    .hero-overlay .btn:hover {
-      background-color: #16a085;
     }
 
-    /* Content section */
     .content {
       padding: 40px 20px;
       max-width: 1000px;
-      margin: 0 auto;
+      margin: auto;
       text-align: center;
-    }
-    .content h2 {
-      color: #333;
-      font-size: 28px;
-      margin-bottom: 15px;
-    }
-    .content p {
-      color: #555;
-      font-size: 18px;
-      line-height: 1.6;
     }
 
     footer {
       background: #2c3e50;
       color: white;
-      padding: 15px;
       text-align: center;
-      margin-top: 40px;
-    }
-
-    @media (max-width: 768px) {
-      .hero-overlay h1 {
-        font-size: 26px;
-      }
-      .hero-overlay p {
-        font-size: 16px;
-      }
+      padding: 15px;
     }
   </style>
 </head>
+
 <body>
 
   <!-- Navbar -->
   <header class="navbar">
-    <div class="logo">Kongu Engineering College</div>
+    <div class="logo">KEC Bus Facility</div>
     <nav>
       <a href="index.html">Home</a>
       <a href="facilities.html">Facilities</a>
@@ -153,44 +131,53 @@
     </nav>
   </header>
 
-  <!-- Hero Slider -->
+  <!-- Hero -->
   <div class="hero-container">
     <div class="hero-slide active" style="background-image: url('img1.png');"></div>
     <div class="hero-slide" style="background-image: url('img2.png');"></div>
     <div class="hero-slide" style="background-image: url('img3.png');"></div>
+
     <div class="hero-overlay">
-      <h1>Welcome to KEC Bus Services</h1>
-      <p>Reliable · Safe · Smart Bus Attendance System</p>
+      <!-- ✅ MAIN SEO HEADING -->
+      <h1>KEC Bus Facility - Kongu Engineering College</h1>
+
+      <p>Smart RFID Bus Attendance System for Students</p>
+
       <a href="login.html" class="btn">Admin Login</a>
     </div>
   </div>
 
-  <!-- About section -->
+  <!-- Content -->
   <div class="content">
-    <h2>About Our System</h2>
+
+    <h2>Kongu Engineering College Bus System</h2>
+
     <p>
-      At Kongu Engineering College, we prioritize student safety and punctuality. 
-      Our RFID + IR-based bus attendance system automates recording attendance, 
-      prevents misuse, and ensures parents are informed via email. Coming soon: 
-      real-time boarding verification, alerts, and comprehensive reports.
+      The KEC Bus Facility provides a modern RFID-based bus attendance system 
+      for Kongu Engineering College students. This system ensures safety, 
+      punctuality, and accurate attendance tracking for all students using college transport.
     </p>
+
+    <p>
+      With smart automation, the KEC bus system helps prevent misuse, 
+      improves monitoring, and provides reliable transport services.
+    </p>
+
   </div>
 
   <footer>
-    &copy; 2025 Kongu Engineering College | Designed by KEC Team
+    © 2025 KEC Bus Facility | Kongu Engineering College
   </footer>
 
   <script>
     const slides = document.querySelectorAll(".hero-slide");
-    let currentSlide = 0;
+    let i = 0;
 
-    function nextSlide() {
-      slides[currentSlide].classList.remove("active");
-      currentSlide = (currentSlide + 1) % slides.length;
-      slides[currentSlide].classList.add("active");
-    }
-
-    setInterval(nextSlide, 2000);
+    setInterval(() => {
+      slides[i].classList.remove("active");
+      i = (i + 1) % slides.length;
+      slides[i].classList.add("active");
+    }, 3000);
   </script>
 
 </body>
