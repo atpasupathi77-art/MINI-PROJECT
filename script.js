@@ -30,7 +30,7 @@ loginForm.onsubmit = (e) => {
   const password = document.getElementById("password").value;
 
   // Hardcoded admin credentials
-  if (username === "admin" && password === "1234") {
+  if (username === "admin" && password === "Pasupathi@13") {
     window.location.href = "admin.html"; // Redirect to dashboard
   } else {
     errorMsg.textContent = "Invalid credentials!";
